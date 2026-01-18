@@ -7,66 +7,93 @@ from sentiment_analyzer import analyze_sentiment
 import pandas as pd
 from datetime import datetime, timedelta
 
+import matplotlib.pyplot as plt
+
 def main():
     parser = argparse.ArgumentParser(description="Stocks Agent CLI")
     parser.add_argument('--mode', type=str, default='backtest', choices=['backtest', 'live'], help="Mode: backtest or live")
-    parser.add_argument('--symbol', type=str, default='AAPL', help="Stock symbol")
+    parser.add_argument('--symbols', type=str, default='AAPL,GOOGL,MSFT,AMZN,TSLA', help="Comma-separated stock symbols")
     parser.add_argument('--start', type=str, default='2023-01-01', help="Start date (YYYY-MM-DD)")
     parser.add_argument('--end', type=str, default='2023-06-01', help="End date (YYYY-MM-DD)")
     
     args = parser.parse_args()
+    symbols = args.symbols.split(',')
     
-    print(f"Running in {args.mode} mode for {args.symbol}...")
+    print(f"Running in {args.mode} mode for {len(symbols)} stocks: {symbols}")
     
-    # 1. Fetch Data
-    # Fetch extra data for indicators (warmup)
-    start_dt = datetime.strptime(args.start, '%Y-%m-%d')
-    warmup_start = (start_dt - timedelta(days=90)).strftime('%Y-%m-%d')
+    # Dictionary to store processed dataframes
+    data_dict = {}
     
-    df = fetch_stock_data(args.symbol, warmup_start, args.end)
-    if df.empty:
-        print("No stock data found.")
-        return
-
-    # 2. Fetch News
-    print("Fetching news for sentiment analysis...")
-    news_df = fetch_news(args.symbol, args.start, args.end)
-    
-    if not news_df.empty:
-        print(f"Found {len(news_df)} news items. Analyzing sentiment...")
-        news_df['Sentiment'] = news_df['title'].apply(analyze_sentiment)
-        print(f"Average Sentiment: {news_df['Sentiment'].mean()}")
-    else:
-        print("No news found or news fetching failed. Proceeding without sentiment.")
-
-    # 3. Add Indicators & Patterns
-    df = add_technical_indicators(df)
-    df = detect_candlestick_patterns(df)
-    
-    # 4. Strategy
-    strategy = AdvancedPatternStrategy()
-    df = strategy.generate_signals(df, news_df)
-    
-    # Slice back to requested range
-    df = df.loc[args.start:args.end]
-    
-    # 5. Backtest
-    if args.mode == 'backtest':
-        backtester = Backtester()
-        result_df, trades = backtester.run(df)
-        metrics = backtester.get_performance_metrics()
+    # 1. Fetch and Process Data for EACH stock
+    for symbol in symbols:
+        print(f"\n--- Processing {symbol} ---")
         
-        print("\n--- Backtest Results ---")
+        # Fetch extra data for indicators (warmup)
+        start_dt = datetime.strptime(args.start, '%Y-%m-%d')
+        warmup_start = (start_dt - timedelta(days=90)).strftime('%Y-%m-%d')
+        
+        df = fetch_stock_data(symbol, warmup_start, args.end)
+        if df.empty:
+            print(f"No data for {symbol}, skipping.")
+            continue
+
+        # Fetch News
+        print(f"Fetching news for {symbol}...")
+        news_df = fetch_news(symbol, args.start, args.end)
+        
+        if not news_df.empty:
+            print(f"Found {len(news_df)} news items.")
+            news_df['Sentiment'] = news_df['title'].apply(analyze_sentiment)
+        else:
+            print("No news found.")
+
+        # Add Indicators & Patterns
+        df = add_technical_indicators(df)
+        df = detect_candlestick_patterns(df)
+        
+        # Strategy
+        strategy = AdvancedPatternStrategy()
+        df = strategy.generate_signals(df, news_df)
+        
+        # Slice to requested range
+        df = df.loc[args.start:args.end]
+        
+        if not df.empty:
+            data_dict[symbol] = df
+            
+    if not data_dict:
+        print("No valid data found for any stock.")
+        return
+    
+    # 2. Run Portfolio Backtest
+    if args.mode == 'backtest':
+        print("\n--- Running Portfolio Backtest ---")
+        backtester = Backtester(initial_capital=50000) # Increased capital for portfolio
+        history_df, trades = backtester.run(data_dict)
+        metrics = backtester.get_performance_metrics(history_df)
+        
+        print("\n--- Portfolio Results ---")
         for k, v in metrics.items():
             print(f"{k}: {v}")
             
         print(f"\nTotal Trades: {len(trades)}")
-        if len(trades) > 0:
-            print("Last 5 Trades:")
-            for t in trades[-5:]:
-                print(t)
+        
+        # 3. Visualization
+        if not history_df.empty:
+            plt.figure(figsize=(12, 6))
+            plt.plot(history_df.index, history_df['Portfolio Value'], label='Portfolio Value')
+            plt.title('Portfolio Performance (Advanced Strategy)')
+            plt.xlabel('Date')
+            plt.ylabel('Value ($)')
+            plt.legend()
+            plt.grid(True)
+            
+            output_file = 'portfolio_performance.png'
+            plt.savefig(output_file)
+            print(f"\nPerformance graph saved to {output_file}")
+            
     else:
-        print("Live mode not fully implemented yet.")
+        print("Live mode not supported for portfolio yet.")
 
 if __name__ == "__main__":
     main()
