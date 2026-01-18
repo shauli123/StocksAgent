@@ -28,6 +28,46 @@ def get_sp500_tickers():
         print(f"Error fetching S&P 500 list: {e}")
         return []
 
+def select_top_momentum_stocks(tickers, reference_date, top_n=10):
+    """
+    Selects the top N stocks based on 6-month momentum prior to reference_date.
+    """
+    print(f"Scanning {len(tickers)} stocks for top {top_n} momentum winners...")
+    
+    end_date = datetime.strptime(reference_date, '%Y-%m-%d')
+    start_date = end_date - timedelta(days=180) # 6 months lookback
+    
+    try:
+        # Bulk download is faster
+        # yfinance expects space-separated string
+        tickers_str = " ".join(tickers)
+        data = yf.download(tickers_str, start=start_date, end=end_date, progress=True)['Close']
+        
+        # Calculate Return: (End Price - Start Price) / Start Price
+        # We use the first valid index and the last valid index for each column
+        returns = {}
+        
+        for ticker in tickers:
+            if ticker in data.columns:
+                series = data[ticker].dropna()
+                if not series.empty:
+                    start_price = series.iloc[0]
+                    end_price = series.iloc[-1]
+                    if start_price > 0:
+                        ret = (end_price - start_price) / start_price
+                        returns[ticker] = ret
+        
+        # Sort by return descending
+        sorted_tickers = sorted(returns.items(), key=lambda x: x[1], reverse=True)
+        top_tickers = [t[0] for t in sorted_tickers[:top_n]]
+        
+        print(f"Top {top_n} Momentum Stocks: {top_tickers}")
+        return top_tickers
+        
+    except Exception as e:
+        print(f"Error in momentum selection: {e}")
+        return tickers[:top_n] # Fallback
+
 def fetch_stock_data(symbol, start_date, end_date):
     """
     Fetches historical stock data using yfinance.

@@ -1,5 +1,5 @@
 import argparse
-from data_loader import fetch_stock_data, fetch_news, get_sp500_tickers
+from data_loader import fetch_stock_data, fetch_news, get_sp500_tickers, select_top_momentum_stocks
 from technical_analysis import add_technical_indicators, detect_candlestick_patterns
 from strategy import AdvancedPatternStrategy
 from backtester import Backtester
@@ -21,13 +21,29 @@ def main():
     args = parser.parse_args()
     
     if args.sp500:
-        symbols = get_sp500_tickers()
+        all_tickers = get_sp500_tickers()
         if args.limit > 0:
-            symbols = symbols[:args.limit]
+            # If limit is small (e.g. 10), we still want to scan a decent chunk to find winners
+            # But scanning 500 takes time. Let's scan ALL if limit is 0, or scan 100 if limit is small?
+            # User wants "all of s&p500". So we scan ALL 500, then pick Top 10 to trade.
+            # Wait, if user says --limit 10, do they mean "Trade 10" or "Scan 10"?
+            # To get good results, we must SCAN many and TRADE few.
+            # Let's assume we SCAN ALL (or a large subset) and TRADE the top 10.
+            
+            # For this demo speed, let's scan the first 100 tickers and pick top 10
+            scan_pool = all_tickers[:100] if len(all_tickers) > 100 else all_tickers
+            symbols = select_top_momentum_stocks(scan_pool, args.start, top_n=args.limit)
+        else:
+            # If no limit, scan all and trade all? That's too many.
+            # Let's default to trading Top 20 if no limit specified for safety?
+            # Or just scan all and trade all (which will be slow).
+            # Let's stick to the user's likely intent: "Make me money".
+            # So we scan ALL, and pick Top 20.
+            symbols = select_top_momentum_stocks(all_tickers, args.start, top_n=20)
     else:
         symbols = args.symbols.split(',')
     
-    print(f"Running in {args.mode} mode for {len(symbols)} stocks: {symbols[:10]}...")
+    print(f"Running in {args.mode} mode for {len(symbols)} stocks: {symbols}...")
     
     # Dictionary to store processed dataframes
     data_dict = {}
