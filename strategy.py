@@ -15,8 +15,8 @@ class AdvancedPatternStrategy(BaseStrategy):
         df['Score'] = 0
         
         # 1. Trend (SMA Crossover / Alignment)
-        # +1 if SMA 20 > SMA 50 (Uptrend)
-        df.loc[df['SMA_20'] > df['SMA_50'], 'Score'] += 1
+        # +2 if SMA 20 > SMA 50 (Uptrend) - Increased weight to capture trends earlier
+        df.loc[df['SMA_20'] > df['SMA_50'], 'Score'] += 2
         
         # 2. Momentum (RSI)
         # +2 if RSI < 30 (Oversold - Reversal Buy)
@@ -52,10 +52,10 @@ class AdvancedPatternStrategy(BaseStrategy):
             df.loc[df['Sentiment'] < -0.1, 'Score'] -= 2
 
         # Decision Threshold
-        # Buy if Score >= 4 (Strong Confluence)
+        # Buy if Score >= 3 (Moderate Confluence - tuned for earlier entry)
         # Sell if Score <= 0 (Weakness)
         
-        df.loc[df['Score'] >= 4, 'Signal'] = 1
+        df.loc[df['Score'] >= 3, 'Signal'] = 1
         df.loc[df['Score'] <= 0, 'Signal'] = -1
         
         # Force Sell on Death Cross (Trend Reversal)
