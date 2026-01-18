@@ -1,61 +1,38 @@
 {
     "BasicAgent": {
-        "cash": 79.13007354736328,
-        "portfolio_value": 5408.5300216674805,
-        "holdings": {
-            "GOOGL": 3,
-            "AMZN": 4,
-            "TSLA": 2,
-            "NVDA": 5,
-            "META": 1,
-            "INTC": 21,
-            "CSCO": 13,
-            "ADBE": 3,
-            "CRM": 4,
-            "QCOM": 6,
-            "ROK": 2
-        },
+        "cash": 10000,
+        "portfolio_value": 10000,
+        "holdings": {},
         "color": "#3498db",
         "description": "Simple SMA Crossover",
         "start_value": 10000,
-        "revenue": -4591.4699783325195
+        "revenue": 0
     },
     "ProAgent": {
-        "cash": 6406.4000244140625,
-        "portfolio_value": 6406.4000244140625,
-        "holdings": {
-            "ADBE": 6,
-            "CRM": 8
-        },
+        "cash": 10000,
+        "portfolio_value": 10000,
+        "holdings": {},
         "color": "#9b59b6",
         "description": "Scored Strategy + ATR Trailing Stop (2.0)",
         "start_value": 10000,
-        "revenue": -3593.5999755859375
+        "revenue": 0
     },
     "AggressiveAgent": {
-        "cash": 1349.7300720214844,
-        "portfolio_value": 10000.0,
-        "holdings": {
-            "AAPL": 11,
-            "GOOGL": 9,
-            "AMZN": 12
-        },
+        "cash": 10000,
+        "portfolio_value": 10000,
+        "holdings": {},
         "color": "#e74c3c",
         "description": "Compounding + ATR 4.0 + Threshold 2",
         "start_value": 10000,
-        "revenue": 0.0
+        "revenue": 0
     },
     "Mag7Agent": {
-        "cash": 1349.7300720214844,
-        "portfolio_value": 10000.0,
-        "holdings": {
-            "AAPL": 11,
-            "GOOGL": 9,
-            "AMZN": 12
-        },
+        "cash": 10000,
+        "portfolio_value": 10000,
+        "holdings": {},
         "color": "#f1c40f",
         "description": "Aggressive Strategy on Mag 7 Stocks",
         "start_value": 10000,
-        "revenue": 0.0
+        "revenue": 0
     }
 }
