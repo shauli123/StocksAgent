@@ -8,24 +8,14 @@
     ],
     "routes": [
         {
-            {
-                "version": 2,
-                "builds": [
-                    {
-                        "src": "app.py",
-                        "use": "@vercel/python"
-                    }
-                ],
-                "routes": [
-                    {
-                        "src": "/(.*)",
-                        "dest": "app.py"
-                    }
-                ],
-                "crons": [
-                    {
-                        "path": "/api/trade",
-                        "schedule": "*/5 * * * *"
-                    }
-                ]
-            }
+            "src": "/(.*)",
+            "dest": "app.py"
+        }
+    ],
+    "crons": [
+        {
+            "path": "/api/trade",
+            "schedule": "*/5 * * * *"
+        }
+    ]
+}
