@@ -14,23 +14,49 @@ async function fetchStats() {
 }
 
 async function triggerTrade() {
-    const btn = document.getElementById('trade-btn');
-    btn.disabled = true;
-    btn.innerText = 'Trading...';
-
+    // Manual trigger (optional, since background thread is running)
     try {
         const response = await fetch('/api/trade');
         const result = await response.json();
-        alert(`Trade Cycle Complete! Executed ${result.trades_executed} trades.`);
+        alert(`Manual Trade Cycle Complete! Executed ${result.trades_executed} trades.`);
         fetchStats();
     } catch (error) {
         console.error('Error triggering trade:', error);
-        alert('Error triggering trade');
-    } finally {
-        btn.disabled = false;
-        btn.innerText = 'Trigger Trade Cycle';
     }
 }
+
+function updateLeaderboard(agents) {
+    const tbody = document.querySelector('#leaderboard-table tbody');
+    tbody.innerHTML = '';
+
+    // Convert to array and sort by portfolio value
+    const sortedAgents = Object.entries(agents).sort((a, b) => b[1].portfolio_value - a[1].portfolio_value);
+
+    sortedAgents.forEach(([name, agent], index) => {
+        const initial = 10000;
+        const returnPct = ((agent.portfolio_value - initial) / initial) * 100;
+        const revenue = agent.revenue || 0;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>#${index + 1}</td>
+            <td>
+                <span style="color: ${agent.color}; font-weight: bold;">${name}</span>
+                <br><small style="color: #aaa;">${agent.description}</small>
+            </td>
+            <td>$${agent.portfolio_value.toFixed(2)}</td>
+            <td style="color: ${returnPct >= 0 ? '#2ecc71' : '#e74c3c'}">
+                ${returnPct >= 0 ? '+' : ''}${returnPct.toFixed(2)}%
+            </td>
+            <td style="color: ${revenue >= 0 ? '#2ecc71' : '#e74c3c'}">
+                $${revenue.toFixed(2)}
+            </td>
+            <td>$${agent.cash.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
 function updateChart(history, agents) {
     const ctx = document.getElementById('portfolioChart').getContext('2d');
 

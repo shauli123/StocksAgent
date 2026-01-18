@@ -50,12 +50,12 @@ except:
     SP500_TICKERS = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'NVDA', 'META', 'NFLX', 'AMD', 'INTC', 
                      'IBM', 'ORCL', 'CSCO', 'ADBE', 'CRM', 'QCOM', 'TXN', 'AVGO', 'PYPL', 'SBUX']
 
-@app.route('/api/trade')
-def trigger_trade():
+import threading
+import time
+
+def run_trade_cycle():
     """
-    Executes one trading cycle for all agents.
-    To simulate "All Stocks" without 40-minute delays, we scan a random batch of 50 stocks per cycle.
-    Over time, this covers the whole market.
+    Core trading logic, decoupled from Flask request context.
     """
     try:
         # 1. Load State
@@ -74,7 +74,6 @@ def trigger_trade():
         # 2. Fetch Market Data (Batch of 50)
         batch_size = 50
         universe_batch = random.sample(SP500_TICKERS, min(len(SP500_TICKERS), batch_size))
-        # Always include Mag 7 to ensure action
         mag7 = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'NVDA', 'META']
         universe_batch = list(set(universe_batch + mag7))
         
@@ -93,12 +92,11 @@ def trigger_trade():
                     df = add_technical_indicators(df)
                     market_data[symbol] = df
                     current_prices[symbol] = df.iloc[-1]['Close']
-            except Exception as e:
-                # print(f"Error fetching {symbol}: {e}")
+            except Exception:
                 pass
 
         if not market_data:
-            return jsonify({'status': 'Error', 'message': 'No market data fetched'})
+            return {'status': 'Error', 'message': 'No market data fetched'}
 
         # 3. Run Agents
         timestamp = datetime.now().isoformat()
@@ -133,10 +131,6 @@ def trigger_trade():
             agent.update_portfolio_value(current_prices)
             
             # Calculate Revenue Per Day
-            # We need to track the value at the start of the "day" (or session)
-            # For this demo, let's track "Session Profit" since server start or last reset
-            # But user asked for "Revenue Per Day". 
-            # Let's verify if 'start_value' exists, if not init it.
             start_value = agents_data.get(name, {}).get('start_value', 10000)
             revenue = agent.portfolio_value - start_value
             
@@ -160,15 +154,37 @@ def trigger_trade():
         save_json(HISTORY_FILE, history)
         save_json(TRADES_FILE, trades_log)
         
-        return jsonify({
+        return {
             'status': 'Success', 
             'timestamp': timestamp, 
             'trades_executed': len(new_trades),
             'new_trades': new_trades
-        })
+        }
         
     except Exception as e:
-        return jsonify({'status': 'Error', 'message': str(e)}), 500
+        print(f"Trade Cycle Error: {e}")
+        return {'status': 'Error', 'message': str(e)}
+
+@app.route('/api/trade')
+def trigger_trade():
+    """
+    Manual trigger endpoint.
+    """
+    result = run_trade_cycle()
+    return jsonify(result)
+
+def background_trader():
+    """
+    Runs the trading cycle every 10 seconds in the background.
+    """
+    print("Starting Background Auto-Trader...")
+    while True:
+        run_trade_cycle()
+        time.sleep(10)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Start background thread
+    t = threading.Thread(target=background_trader, daemon=True)
+    t.start()
+    
+    app.run(debug=True, use_reloader=False) # use_reloader=False prevents double execution

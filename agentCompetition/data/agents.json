@@ -1,7 +1,7 @@
 {
     "BasicAgent": {
         "cash": 79.13007354736328,
-        "portfolio_value": 5283.050010681152,
+        "portfolio_value": 5408.5300216674805,
         "holdings": {
             "GOOGL": 3,
             "AMZN": 4,
@@ -18,7 +18,7 @@
         "color": "#3498db",
         "description": "Simple SMA Crossover",
         "start_value": 10000,
-        "revenue": -4716.949989318848
+        "revenue": -4591.4699783325195
     },
     "ProAgent": {
         "cash": 6406.4000244140625,
