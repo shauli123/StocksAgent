@@ -4,6 +4,29 @@ import pandas as pd
 from datetime import datetime, timedelta
 import time
 import random
+from io import StringIO
+import requests
+
+def get_sp500_tickers():
+    """
+    Fetches the list of S&P 500 tickers from Wikipedia.
+    """
+    print("Fetching S&P 500 tickers from Wikipedia...")
+    try:
+        url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        
+        table = pd.read_html(StringIO(response.text))
+        df = table[0]
+        tickers = df['Symbol'].tolist()
+        # Clean tickers (e.g. BRK.B -> BRK-B for yfinance)
+        tickers = [t.replace('.', '-') for t in tickers]
+        return tickers
+    except Exception as e:
+        print(f"Error fetching S&P 500 list: {e}")
+        return []
 
 def fetch_stock_data(symbol, start_date, end_date):
     """

@@ -1,5 +1,5 @@
 import argparse
-from data_loader import fetch_stock_data, fetch_news
+from data_loader import fetch_stock_data, fetch_news, get_sp500_tickers
 from technical_analysis import add_technical_indicators, detect_candlestick_patterns
 from strategy import AdvancedPatternStrategy
 from backtester import Backtester
@@ -13,13 +13,21 @@ def main():
     parser = argparse.ArgumentParser(description="Stocks Agent CLI")
     parser.add_argument('--mode', type=str, default='backtest', choices=['backtest', 'live'], help="Mode: backtest or live")
     parser.add_argument('--symbols', type=str, default='AAPL,GOOGL,MSFT,AMZN,TSLA', help="Comma-separated stock symbols")
+    parser.add_argument('--sp500', action='store_true', help="Run on all S&P 500 stocks")
+    parser.add_argument('--limit', type=int, default=0, help="Limit number of stocks (0 for all)")
     parser.add_argument('--start', type=str, default='2023-01-01', help="Start date (YYYY-MM-DD)")
     parser.add_argument('--end', type=str, default='2023-06-01', help="End date (YYYY-MM-DD)")
     
     args = parser.parse_args()
-    symbols = args.symbols.split(',')
     
-    print(f"Running in {args.mode} mode for {len(symbols)} stocks: {symbols}")
+    if args.sp500:
+        symbols = get_sp500_tickers()
+        if args.limit > 0:
+            symbols = symbols[:args.limit]
+    else:
+        symbols = args.symbols.split(',')
+    
+    print(f"Running in {args.mode} mode for {len(symbols)} stocks: {symbols[:10]}...")
     
     # Dictionary to store processed dataframes
     data_dict = {}
