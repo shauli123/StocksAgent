@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 class Backtester:
-    def __init__(self, initial_capital=10000, trailing_stop_atr_multiplier=3.0):
+    def __init__(self, initial_capital=10000, trailing_stop_atr_multiplier=4.0):
         self.initial_capital = initial_capital
         self.cash = initial_capital
         self.positions = {} # {symbol: shares}
@@ -51,9 +51,11 @@ class Backtester:
                 
                 # Execute Trades
                 if signal == 1: # Buy
-                    allocation = self.initial_capital * 0.2
+                    # Aggressive Compounding: Invest 30% of AVAILABLE CASH per trade
+                    allocation = self.cash * 0.3
                     
-                    if self.cash >= allocation and symbol not in self.positions:
+                    # Ensure minimum trade size to avoid tiny trades
+                    if allocation > 1000 and symbol not in self.positions:
                         shares_to_buy = int(allocation // price)
                         if shares_to_buy > 0:
                             cost = shares_to_buy * price

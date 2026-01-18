@@ -56,10 +56,10 @@ class AdvancedPatternStrategy(BaseStrategy):
             df.loc[df['Sentiment'] < -0.1, 'Score'] -= 2
 
         # Decision Threshold
-        # Buy if Score >= 3 (Moderate Confluence - tuned for earlier entry)
+        # Buy if Score >= 2 (Aggressive Entry - Catch all trends)
         # Sell if Score <= 0 (Weakness)
         
-        df.loc[df['Score'] >= 3, 'Signal'] = 1
+        df.loc[df['Score'] >= 2, 'Signal'] = 1
         df.loc[df['Score'] <= 0, 'Signal'] = -1
         
         # Force Sell on Death Cross (Trend Reversal)
