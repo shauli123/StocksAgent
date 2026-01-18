@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 def main():
     parser = argparse.ArgumentParser(description="Stocks Agent CLI")
     parser.add_argument('--mode', type=str, default='backtest', choices=['backtest', 'live'], help="Mode: backtest or live")
-    parser.add_argument('--symbols', type=str, default='AAPL,GOOGL,MSFT,AMZN,TSLA', help="Comma-separated stock symbols")
+    # Updated default to "Magnificent 7" + Friends for maximum growth
+    parser.add_argument('--symbols', type=str, default='AAPL,GOOGL,MSFT,AMZN,TSLA,NVDA,META,NFLX', help="Comma-separated stock symbols")
     parser.add_argument('--sp500', action='store_true', help="Run on all S&P 500 stocks")
     parser.add_argument('--limit', type=int, default=0, help="Limit number of stocks (0 for all)")
     parser.add_argument('--start', type=str, default='2023-01-01', help="Start date (YYYY-MM-DD)")
