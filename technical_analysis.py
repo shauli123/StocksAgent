@@ -1,7 +1,7 @@
 import pandas as pd
 from ta.trend import SMAIndicator, MACD
 from ta.momentum import RSIIndicator, StochasticOscillator
-from ta.volatility import BollingerBands
+from ta.volatility import BollingerBands, AverageTrueRange
 
 def add_technical_indicators(df):
     """
@@ -30,6 +30,10 @@ def add_technical_indicators(df):
     stoch = StochasticOscillator(high=df['High'], low=df['Low'], close=df['Close'], window=14, smooth_window=3)
     df['Stoch_K'] = stoch.stoch()
     df['Stoch_D'] = stoch.stoch_signal()
+    
+    # ATR (Average True Range) for Volatility-based Stops
+    atr = AverageTrueRange(high=df['High'], low=df['Low'], close=df['Close'], window=14)
+    df['ATR'] = atr.average_true_range()
     
     return df
 

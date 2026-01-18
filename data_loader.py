@@ -3,6 +3,7 @@ from GoogleNews import GoogleNews
 import pandas as pd
 from datetime import datetime, timedelta
 import time
+import random
 
 def fetch_stock_data(symbol, start_date, end_date):
     """
@@ -32,12 +33,12 @@ def fetch_news(symbol, start_date, end_date):
         
         # Fetch a few pages to get a sample of news
         results = []
-        for i in range(1, 6): # Pages 1 to 5
+        for i in range(1, 4): # Pages 1 to 3 (Reduced to avoid 429)
             googlenews.getpage(i)
             page_results = googlenews.result()
             if page_results:
                 results.extend(page_results)
-            time.sleep(1) # Be nice to the server
+            time.sleep(random.uniform(2, 4)) # Be nicer to the server
             
         if not results:
             print("No news found.")
