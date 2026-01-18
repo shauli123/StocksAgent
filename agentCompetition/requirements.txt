@@ -1,0 +1,8 @@
+Flask==3.0.0
+pandas==2.2.0
+yfinance==0.2.36
+requests==2.31.0
+ta==0.11.0
+nltk==3.8.1
+GoogleNews==1.6.14
+lxml==5.1.0

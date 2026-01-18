@@ -1,0 +1,173 @@
+[
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "BasicAgent",
+        "symbol": "GOOGL",
+        "action": "BUY",
+        "shares": 3,
+        "price": 330.0,
+        "total": 990.0
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "BasicAgent",
+        "symbol": "AMZN",
+        "action": "BUY",
+        "shares": 4,
+        "price": 239.1199951171875,
+        "total": 956.47998046875
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "BasicAgent",
+        "symbol": "TSLA",
+        "action": "BUY",
+        "shares": 2,
+        "price": 437.5,
+        "total": 875.0
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "BasicAgent",
+        "symbol": "NVDA",
+        "action": "BUY",
+        "shares": 5,
+        "price": 186.22999572753906,
+        "total": 931.1499786376953
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "BasicAgent",
+        "symbol": "META",
+        "action": "BUY",
+        "shares": 1,
+        "price": 620.25,
+        "total": 620.25
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "BasicAgent",
+        "symbol": "INTC",
+        "action": "BUY",
+        "shares": 21,
+        "price": 46.959999084472656,
+        "total": 986.1599807739258
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "BasicAgent",
+        "symbol": "CSCO",
+        "action": "BUY",
+        "shares": 13,
+        "price": 75.19000244140625,
+        "total": 977.4700317382812
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "BasicAgent",
+        "symbol": "ADBE",
+        "action": "BUY",
+        "shares": 3,
+        "price": 296.1199951171875,
+        "total": 888.3599853515625
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "BasicAgent",
+        "symbol": "CRM",
+        "action": "BUY",
+        "shares": 4,
+        "price": 227.11000061035156,
+        "total": 908.4400024414062
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "BasicAgent",
+        "symbol": "QCOM",
+        "action": "BUY",
+        "shares": 6,
+        "price": 159.4199981689453,
+        "total": 956.5199890136719
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "ProAgent",
+        "symbol": "ADBE",
+        "action": "BUY",
+        "shares": 6,
+        "price": 296.1199951171875,
+        "total": 1776.719970703125
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "ProAgent",
+        "symbol": "CRM",
+        "action": "BUY",
+        "shares": 8,
+        "price": 227.11000061035156,
+        "total": 1816.8800048828125
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "AggressiveAgent",
+        "symbol": "AAPL",
+        "action": "BUY",
+        "shares": 11,
+        "price": 255.52999877929688,
+        "total": 2810.8299865722656
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "AggressiveAgent",
+        "symbol": "GOOGL",
+        "action": "BUY",
+        "shares": 9,
+        "price": 330.0,
+        "total": 2970.0
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "AggressiveAgent",
+        "symbol": "AMZN",
+        "action": "BUY",
+        "shares": 12,
+        "price": 239.1199951171875,
+        "total": 2869.43994140625
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "Mag7Agent",
+        "symbol": "AAPL",
+        "action": "BUY",
+        "shares": 11,
+        "price": 255.52999877929688,
+        "total": 2810.8299865722656
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "Mag7Agent",
+        "symbol": "GOOGL",
+        "action": "BUY",
+        "shares": 9,
+        "price": 330.0,
+        "total": 2970.0
+    },
+    {
+        "date": "2026-01-18T20:21:58.679194",
+        "agent": "Mag7Agent",
+        "symbol": "AMZN",
+        "action": "BUY",
+        "shares": 12,
+        "price": 239.1199951171875,
+        "total": 2869.43994140625
+    },
+    {
+        "date": "2026-01-18T20:31:09.690468",
+        "agent": "BasicAgent",
+        "symbol": "ROK",
+        "action": "BUY",
+        "shares": 2,
+        "price": 415.5199890136719,
+        "total": 831.0399780273438
+    }
+]

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Trading Competition</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AI Trading Arena 📈</h1>
+            <p>Live Paper Trading Competition</p>
+            <button id="refresh-btn" onclick="fetchStats()">Refresh Data</button>
+            <button id="trade-btn" onclick="triggerTrade()">Trigger Trade Cycle</button>
+            <div style="margin-top: 10px;">
+                <label style="color: #fff; font-size: 1.1rem;">
+                    <input type="checkbox" id="auto-trade-toggle" onchange="toggleAutoTrade()"> 🔄 Auto Trading (Every
+                    10s)
+                </label>
+            </div>
+        </header>
+
+        <div class="grid">
+            <!-- Leaderboard -->
+            <div class="card leaderboard">
+                <h2>🏆 Leaderboard</h2>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Agent</th>
+                            <th>Portfolio Value</th>
+                            <th>Return</th>
+                            <th>Revenue (Session)</th>
+                            <th>Cash</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Chart -->
+            <div class="card chart-container">
+                <h2>📊 Portfolio Performance</h2>
+                <canvas id="portfolioChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Trades -->
+        <div class="card trades">
+            <h2>Recent Trades</h2>
+            <div class="trades-list" id="trades-list">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
