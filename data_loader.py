@@ -33,12 +33,16 @@ def fetch_news(symbol, start_date, end_date):
         
         # Fetch a few pages to get a sample of news
         results = []
-        for i in range(1, 4): # Pages 1 to 3 (Reduced to avoid 429)
-            googlenews.getpage(i)
-            page_results = googlenews.result()
-            if page_results:
-                results.extend(page_results)
-            time.sleep(random.uniform(2, 4)) # Be nicer to the server
+        for i in range(1, 2): # Just 1 page to avoid 429 Rate Limiting
+            try:
+                googlenews.getpage(i)
+                page_results = googlenews.result()
+                if page_results:
+                    results.extend(page_results)
+                time.sleep(random.uniform(2, 4)) 
+            except Exception as e:
+                print(f"Warning: Could not fetch news page {i}: {e}")
+                break
             
         if not results:
             print("No news found.")

@@ -15,13 +15,17 @@ class AdvancedPatternStrategy(BaseStrategy):
         df['Score'] = 0
         
         # 1. Trend (SMA Crossover / Alignment)
-        # +2 if SMA 20 > SMA 50 (Uptrend) - Increased weight to capture trends earlier
+        # +3 if SMA 20 > SMA 50 AND Close > SMA 20 (Strong Uptrend)
+        # +2 if SMA 20 > SMA 50 (Uptrend)
         df.loc[df['SMA_20'] > df['SMA_50'], 'Score'] += 2
+        df.loc[(df['SMA_20'] > df['SMA_50']) & (df['Close'] > df['SMA_20']), 'Score'] += 1
         
         # 2. Momentum (RSI)
         # +2 if RSI < 30 (Oversold - Reversal Buy)
+        # +1 if RSI > 50 and RSI < 70 (Healthy Bullish Momentum)
         # -2 if RSI > 70 (Overbought - Reversal Sell)
         df.loc[df['RSI'] < 30, 'Score'] += 2
+        df.loc[(df['RSI'] > 50) & (df['RSI'] < 70), 'Score'] += 1
         df.loc[df['RSI'] > 70, 'Score'] -= 2
         
         # 3. Momentum (MACD)

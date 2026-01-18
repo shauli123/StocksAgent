@@ -6,7 +6,7 @@ from backtester import Backtester
 from sentiment_analyzer import analyze_sentiment
 import pandas as pd
 from datetime import datetime, timedelta
-
+import time
 import matplotlib.pyplot as plt
 
 def main():
@@ -60,6 +60,9 @@ def main():
         
         if not df.empty:
             data_dict[symbol] = df
+            
+        print(f"Finished processing {symbol}. Waiting 5s...")
+        time.sleep(5) # Delay between stocks to prevent rate limiting
             
     if not data_dict:
         print("No valid data found for any stock.")
