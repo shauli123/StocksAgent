@@ -85,6 +85,7 @@ def run_trade_cycle():
         
         current_prices = {}
         
+        errors = []
         for symbol in universe_batch:
             try:
                 df = fetch_stock_data(symbol, start_date, end_date)
@@ -92,11 +93,13 @@ def run_trade_cycle():
                     df = add_technical_indicators(df)
                     market_data[symbol] = df
                     current_prices[symbol] = df.iloc[-1]['Close']
-            except Exception:
-                pass
+                else:
+                    errors.append(f"{symbol}: Empty DF")
+            except Exception as e:
+                errors.append(f"{symbol}: {str(e)}")
 
         if not market_data:
-            return {'status': 'Error', 'message': 'No market data fetched'}
+            return {'status': 'Error', 'message': 'No market data fetched', 'details': errors[:5]}
 
         # 3. Run Agents
         timestamp = datetime.now().isoformat()

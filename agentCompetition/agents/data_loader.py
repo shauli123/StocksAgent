@@ -70,12 +70,27 @@ def select_top_momentum_stocks(tickers, reference_date, top_n=10):
 
 def fetch_stock_data(symbol, start_date, end_date):
     """
-    Fetches historical stock data using yfinance.
+    Fetches historical stock data using direct Yahoo Finance API call.
+    More robust for Vercel/Serverless environments.
     """
     print(f"Fetching stock data for {symbol} from {start_date} to {end_date}...")
-    ticker = yf.Ticker(symbol)
-    df = ticker.history(start=start_date, end=end_date)
-    return df
+    try:
+        start_ts = int(datetime.strptime(start_date, '%Y-%m-%d').timestamp())
+        end_ts = int(datetime.strptime(end_date, '%Y-%m-%d').timestamp())
+        
+        url = f"https://query1.finance.yahoo.com/v7/finance/download/{symbol}?period1={start_ts}&period2={end_ts}&interval=1d&events=history&includeAdjustedClose=true"
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+        
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        
+        df = pd.read_csv(StringIO(response.text))
+        df['Date'] = pd.to_datetime(df['Date'])
+        df.set_index('Date', inplace=True)
+        return df
+    except Exception as e:
+        print(f"Error fetching {symbol}: {e}")
+        return pd.DataFrame()
 
 def fetch_news(symbol, start_date, end_date):
     """
