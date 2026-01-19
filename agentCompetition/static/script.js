@@ -127,5 +127,16 @@ function updateTrades(trades) {
 
 // Initial Load
 fetchStats();
-// Poll every 5 seconds
+// Poll every 5 seconds for UI updates
 setInterval(fetchStats, 5000);
+
+// Client-side Auto-Trader (Pings /api/trade every 10 seconds while tab is open)
+// This bypasses Vercel's Hobby cron limits for the active user.
+setInterval(async () => {
+    try {
+        await fetch('/api/trade');
+        console.log("Background trade cycle triggered by client.");
+    } catch (e) {
+        console.error("Client-side trade trigger failed:", e);
+    }
+}, 10000);
